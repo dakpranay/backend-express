@@ -1,9 +1,13 @@
 const express = require('express')
 const fs = require('fs')
+const morgan=require('morgan')
 const port = 8080
 
 
 const app = express()
+
+//middlewares
+app.use(morgan('dev'))
 app.use(express.json())
 
 
@@ -13,6 +17,8 @@ app.use((req,res,next)=>{
 })
 
 
+
+//routes handler
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`))
 
 const getAllTours = (req, res) => {
@@ -94,7 +100,7 @@ const deleteTour = (req, res) => {
 
 }
 
-
+//routes
 // app.get('/api/v1/tours', getAllTours)
 // app.get('/api/v1/tours/:id', getTour)
 // app.post('/api/v1/tours', createTour)
