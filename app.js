@@ -6,17 +6,12 @@ const app = express()
 const tourRouter=require('./routes/tourRoutes')
 const userRouter=require('./routes/userRoutes')
 
-
 //middlewares
-app.use(morgan('dev'))
+if(process.env.NODE_ENV==='development'){
+    app.use(morgan('dev'))
+}
+
 app.use(express.json())
-// app.use(express.static(`${__dirname}/dev-data/templates`)) //to serve static file
-
-
-app.use((req, res, next) => {
-    console.log("hello from middleware")
-    next()
-})
 
 
 app.use('/api/v1/tours', tourRouter)
