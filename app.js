@@ -10,6 +10,7 @@ const userRouter=require('./routes/userRoutes')
 //middlewares
 app.use(morgan('dev'))
 app.use(express.json())
+// app.use(express.static(`${__dirname}/dev-data/templates`)) //to serve static file
 
 
 app.use((req, res, next) => {
