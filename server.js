@@ -4,8 +4,7 @@ const dotenv = require('dotenv')
 dotenv.config({ path: './config.env' })
 
 const app = require('./app')
-//we can set enviornmental variable using terminal by writting 
-//NODE_ENV=development x=20 nodemon server.js
+
 
 const port = process.env.PORT || 8080
 
@@ -19,37 +18,6 @@ mongoose.connect(DB, {
     console.log('database connected successfully')
 }).catch(err=>{
     console.log(err)
-})
-
-const tourSchema=new mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
-        unique:true
-    },
-    // rating:Number,
-    rating:{
-        type:Number,
-        default:4.5,
-    },
-    price:{
-        type:Number,
-        required:[true,'provide price']
-    }
-
-})
-const Tour=mongoose.model('Tour',tourSchema)
-
-const testTour=new Tour({
-    name:'pranay',
-    rating:5,
-    price:200
-})
-
-testTour.save().then(doc=>{
-    console.log(doc)
-}).catch(err=>{
-    console.log('Error ',err)
 })
 
 
