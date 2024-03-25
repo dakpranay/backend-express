@@ -48,7 +48,7 @@ const tourSchema = new mongoose.Schema({
     },
     imageCover: {
         type: String,
-        require: [true, 'required a cover image']
+        required: [true, 'required a cover image']
     },
     images: [String],
     createdAt:{
@@ -58,6 +58,14 @@ const tourSchema = new mongoose.Schema({
     },
     startDates:[Date]
 
+},{
+    toJSON:{virtuals:true},
+    toObject:{virtuals:true}
 })
+
+tourSchema.virtual('durationWeeks').get(function(){
+    return this.duration/7
+})
+
 const Tour = mongoose.model('Tour', tourSchema)
 module.exports = Tour
