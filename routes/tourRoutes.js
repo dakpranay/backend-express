@@ -1,6 +1,6 @@
-const express=require('express')
+const express = require('express')
 const router = express.Router()
-const tourController=require('../controller/tourController')
+const tourController = require('../controller/tourController')
 
 //to check if a params exists or not in url
 // router.param('id',(req,res,next,val)=>{
@@ -8,7 +8,17 @@ const tourController=require('../controller/tourController')
 //     next()
 // })
 
-router.route('/top-5-cheap').get(tourController.aliasTopTour,tourController.getAllTours)
+router
+    .route('/top-5-cheap')
+    .get(tourController.aliasTopTour, tourController.getAllTours)
+
+router
+    .route('/toure-stats')
+    .get(tourController.getTourStats)
+
+router
+    .route('/monthly-plan/:year')
+    .get(tourController.getMonthlyPlan)
 
 router
     .route('/')
@@ -21,4 +31,4 @@ router
     .patch(tourController.updateTour)
     .delete(tourController.deleteTour)
 
-module.exports=router
+module.exports = router
