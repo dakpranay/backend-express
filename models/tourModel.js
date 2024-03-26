@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const slugify=require('slugify')
+const slugify = require('slugify')
 
 
 const tourSchema = new mongoose.Schema({
@@ -9,7 +9,7 @@ const tourSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
-    slug:String,
+    slug: String,
     duration: {
         type: Number,
         required: [true, 'a tour must have a duration']
@@ -54,25 +54,42 @@ const tourSchema = new mongoose.Schema({
         required: [true, 'required a cover image']
     },
     images: [String],
-    createdAt:{
-        type:Date,
-        default:Date.now(),
-        select:false
+    createdAt: {
+        type: Date,
+        default: Date.now(),
+        select: false
     },
-    startDates:[Date]
+    startDates: [Date],
+    secretTour: {
+        type: Boolean,
+        default: false
+    }
 
-},{
-    toJSON:{virtuals:true},
-    toObject:{virtuals:true}
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 })
 
-tourSchema.virtual('durationWeeks').get(function(){
-    return this.duration/7
+tourSchema.virtual('durationWeeks').get(function () {
+    return this.duration / 7
 })
 
-//run when save and create not when insertMany
-tourSchema.pre('save',function(next){
-    this.slug=slugify(this.name,{lower:true})
+//document middleware run when save and create not when insertMany
+tourSchema.pre('save', function (next) {
+    this.slug = slugify(this.name, { lower: true })
+    next()
+})
+
+//query middleware 
+tourSchema.pre(/^find/, function (next) {
+    this.find({ secretTour: { $ne: true } })
+    this.start=Date.now()
+    next()
+})
+
+tourSchema.post(/^find/, function (docs, next) {
+    console.log('Query took'+(Date.now()-this.start))
+    console.log(docs)
     next()
 })
 
