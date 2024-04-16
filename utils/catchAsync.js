@@ -3,3 +3,4 @@ module.exports=fu=>{
         fu(req,res,next).catch(next)
     }
 }
+
