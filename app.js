@@ -1,11 +1,12 @@
 const express = require('express')
 const morgan = require('morgan')
 
-
-const app = express()
+const AppError =require('./utils/appError')
+const globleErrorHandler=require('./controller/errorController')
 const tourRouter=require('./routes/tourRoutes')
 const userRouter=require('./routes/userRoutes')
 
+const app = express()
 //middlewares
 if(process.env.NODE_ENV==='development'){
     app.use(morgan('dev'))
@@ -18,27 +19,13 @@ app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/user', userRouter)
 
 app.all('*',(req,res,next)=>{
-    // res.status(404).json({
-    //     status:'fail',
-    //     message:`no route found ${req.originalUrl
-    // }`
-    // })
-    const err=new Error(`no route found ${req.originalUrl}`)
-    err.statusCode=404
-    err.status='fail'
-    next(err)
+   
+    // const err=new Error(`no route found ${req.originalUrl}`)
+    // err.statusCode=404
+    // err.status='fail'
+    next(new AppError(`no route found ${req.originalUrl}`,404))
 })
 
-app.use((err,req,res,next)=>{
-    err.statusCode=err.statusCode || 500
-    err.status=err.status || 'error'
-
-    res.status(err.statusCode).json({
-        status:err.status,
-        message:err.message
-    })
-})
-
-
+app.use(globleErrorHandler)
 
 module.exports=app
