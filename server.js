@@ -16,12 +16,17 @@ mongoose.connect(DB, {
     useUnifiedTopology: true
 }).then((con)=>{
     console.log('database connected successfully')
-}).catch(err=>{
-    console.log(err)
 })
 
 
-
-app.listen(port, () => {
+const server=app.listen(port, () => {
     console.log('server running on port : ' + port)
+})
+
+process.on('unhandledRejection',err=>{
+    console.log(err.name,err.message)
+    console.log('unhandled rejection shutting down')
+    server.close(()=>{
+        process.exit(1)
+    })
 })
