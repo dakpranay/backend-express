@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const tourController = require('../controller/tourController')
-
+const authController=require('../controller/authController')
 //to check if a params exists or not in url
 // router.param('id',(req,res,next,val)=>{
 //     console.log(val)
@@ -22,7 +22,7 @@ router
 
 router
     .route('/')
-    .get(tourController.getAllTours)
+    .get(authController.protect,tourController.getAllTours)
     .post(tourController.createTour)
 
 router

@@ -1,3 +1,4 @@
+const {promisify} =require('util')
 const jwt=require('jsonwebtoken')
 const User=require('../models/userModel')
 const catchAsync =require('../utils/catchAsync')
@@ -8,7 +9,6 @@ const signToken =(id)=>{
         expiresIn:process.env.JWT_EXPIRES_IN
     })
 }
-
 
 
 exports.signup=catchAsync(async(req,res,next)=>{
@@ -53,4 +53,35 @@ exports.login=catchAsync(async (req,res,next)=>{
     })
 
 
+})
+
+
+exports.protect=catchAsync(async(req,res,next)=>{
+    //getting token and check of its there
+    let token
+    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+        token=req.headers.authorization.split(' ')[1]
+    }
+   
+    if(!token){
+        return next(new AppError('You are not logged in! Please login',401))
+    }
+
+    //verify the token
+    const decoded=await promisify(jwt.verify)(token,process.env.JWT_SECRET);
+
+    //check if user still exists
+    const freshUser=await user.findById(decoded.id)
+    if(!freshUser){
+        return next(new AppError('User no loger exists',401))
+    }
+
+    //check user changed his password after the token was issued
+    if(freshUser.changePasswordAfter(decoded.iat)){
+        return next(new AppError('User recently changed password! please login in again',401))
+    }
+
+    //grant access to protect route
+    req.user=freshUser;
+    next()
 })
