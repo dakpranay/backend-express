@@ -1,3 +1,4 @@
+const crypto=require('crypto')
 const {promisify} =require('util')
 const jwt=require('jsonwebtoken')
 const User=require('../models/userModel')
@@ -131,6 +132,29 @@ exports.forgotPassword=catchAsync(async (req,res,next)=>{
     }
 })
 
-exports.resetPasword=(req,res,next)=>{
+exports.resetPasword=catchAsync(async(req,res,next)=>{
+    //get user based on token
+    const hashedToken=crypto.createHash('sha256').update(req.params.token).digest('hex')
+    const user=await User.findOne({
+        passwordResetToken:hashedToken,
+        passwordResetExpires:{$gt:Date.now()}
+    })
+    //if token is not expired and user is exists then update the new password
+    if(!user){
+        return next(new AppError('Token is inalid or has expired',400))
+    }
+    user.password=req.body.password
+    user.passwordConfirm=req.body.passwordConfirm
+    user.passwordResetToken=undefined
+    user.passwordResetExpires=undefined
+    await user.save()
 
-}
+    //update changedPasswordAt property for the user
+
+    //log the user in and send the jwt
+    const token =signToken(user._id);
+    res.status(200).json({
+        status:"success",
+        token
+    })
+})
