@@ -71,17 +71,26 @@ exports.protect=catchAsync(async(req,res,next)=>{
     const decoded=await promisify(jwt.verify)(token,process.env.JWT_SECRET);
 
     //check if user still exists
-    const freshUser=await user.findById(decoded.id)
-    if(!freshUser){
+    const currentUser=await User.findById(decoded.id)
+    if(!currentUser){
         return next(new AppError('User no loger exists',401))
     }
 
     //check user changed his password after the token was issued
-    if(freshUser.changePasswordAfter(decoded.iat)){
+    if(currentUser.changePasswordAfter(decoded.iat)){
         return next(new AppError('User recently changed password! please login in again',401))
     }
 
     //grant access to protect route
-    req.user=freshUser;
+    req.user=currentUser;
     next()
 })
+
+exports.restrictTo=(...roles)=>{
+return (req,res,next)=>{
+    if(!roles.includes(req.user.role)){
+        return next(new AppError('You dont have permission to perform this action',403))
+    }
+    next()
+}
+}
