@@ -12,6 +12,17 @@ const signToken =(id)=>{
     })
 }
 
+const createSendToken=(user,statusCode,res)=>{
+    const token =signToken(user._id);
+    res.status(statusCode).json({
+        status:"success",
+        token,
+        data:{
+            user
+        }
+    })
+}
+
 
 exports.signup=catchAsync(async(req,res,next)=>{
     const newUser=await User.create({
@@ -21,15 +32,8 @@ exports.signup=catchAsync(async(req,res,next)=>{
         passwordConfirm:req.body.passwordConfirm
     });
 
-    const token =signToken(newUser._id)
+    createSendToken(newUser,201,res)
 
-    res.status(201).json({
-        status:"success",
-        token,
-        data:{
-            user:newUser
-        }
-    })
 })
 
 exports.login=catchAsync(async (req,res,next)=>{
@@ -48,13 +52,7 @@ exports.login=catchAsync(async (req,res,next)=>{
 
 
     //everything is correct send the response
-    const token =signToken(user._id);
-    res.status(200).json({
-        status:"success",
-        token
-    })
-
-
+    createSendToken(user,200,res)
 })
 
 
@@ -152,9 +150,23 @@ exports.resetPasword=catchAsync(async(req,res,next)=>{
     //update changedPasswordAt property for the user
 
     //log the user in and send the jwt
-    const token =signToken(user._id);
-    res.status(200).json({
-        status:"success",
-        token
-    })
+    createSendToken(user,200,res)
+})
+
+exports.updatePassword=catchAsync(async(req,res,next)=>{
+    //get the user from collection'
+    const user =await User.findById(req.user.id).select('+password')
+
+    //check if posted password is correct
+    if(!await user.correctPassword(req.body.passwordCurrent,user.password)){
+        return next(new AppError('Your password is wrong',401))
+    }
+    //if so update password
+    user.password=req.body.password
+    user.passwordConfirm=req.body.passwordConfirm
+    //User.findByIdAndUpdate will not work as intended
+    await user.save();
+
+    //log user in,send jwt
+    createSendToken(user,201,res) 
 })
