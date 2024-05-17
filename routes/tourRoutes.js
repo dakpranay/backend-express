@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const tourController = require('../controller/tourController')
 const authController=require('../controller/authController')
+const reviewController=require('../controller/reviewController')
+
 //to check if a params exists or not in url
 // router.param('id',(req,res,next,val)=>{
 //     console.log(val)
@@ -36,6 +38,14 @@ router
         authController.protect,
         authController.restrictTo('admin'),
         tourController.deleteTour
+    )
+
+router
+    .route('/:tourId/reviews')
+    .post(
+        authController.protect,
+        authController.restrictTo('user'),
+        reviewController.createReview
     )
 
 module.exports = router
