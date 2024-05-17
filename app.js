@@ -10,6 +10,7 @@ const AppError =require('./utils/appError')
 const globleErrorHandler=require('./controller/errorController')
 const tourRouter=require('./routes/tourRoutes')
 const userRouter=require('./routes/userRoutes')
+const reviewRouter=require('./routes/reviewRoutes')
 
 const app = express()
 // globel middlewares
@@ -55,6 +56,7 @@ app.use((req,res,next)=>{
 
 app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/user', userRouter)
+app.use('/api/v1/reviews',reviewRouter)
 
 app.all('*',(req,res,next)=>{
    
