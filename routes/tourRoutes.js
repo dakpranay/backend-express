@@ -2,13 +2,16 @@ const express = require('express')
 const router = express.Router()
 const tourController = require('../controller/tourController')
 const authController=require('../controller/authController')
-const reviewController=require('../controller/reviewController')
+// const reviewController=require('../controller/reviewController')
+const reviewRouter=require('./../routes/reviewRoutes')
 
 //to check if a params exists or not in url
 // router.param('id',(req,res,next,val)=>{
 //     console.log(val)
 //     next()
 // })
+
+router.use('/:tourId/reviews',reviewRouter)
 
 router
     .route('/top-5-cheap')
@@ -40,12 +43,6 @@ router
         tourController.deleteTour
     )
 
-router
-    .route('/:tourId/reviews')
-    .post(
-        authController.protect,
-        authController.restrictTo('user'),
-        reviewController.createReview
-    )
+
 
 module.exports = router
