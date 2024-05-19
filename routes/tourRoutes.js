@@ -33,6 +33,10 @@ router
     .get(tourController.getTourWithin)
 
 router
+    .route('/distance/:latlng/unit/:unit')
+    .get(tourController.getDistances)
+
+router
     .route('/')
     .get(tourController.getAllTours)
     .post(
