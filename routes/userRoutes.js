@@ -1,5 +1,5 @@
 const express=require('express')
-const router = express.Router()
+const router = express.Router() 
 const userController=require('../controller/userController')
 const authController=require('../controller/authController')
 
@@ -15,7 +15,7 @@ router.use(authController.protect)
 
 router.get('/me',userController.getMe,userController.getUser)
 router.patch('/updateMyPassword',authController.updatePassword)
-router.patch('/updateMe',userController.updateMe)
+router.patch('/updateMe',userController.uploadUserPhoto,userController.resizeUserPhoto,userController.updateMe)
 router.delete('/deleteMe',userController.deleteMe)
 
 router.use(authController.restrictTo('admin'))

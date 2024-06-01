@@ -75,7 +75,7 @@ app.use(hpp({
 app.use((req,res,next)=>{
     // console.log(req)
     req.requestTime=new Date().toISOString();
-    console.log(req.cookies)
+    // console.log(req.cookies)
     // console.log(req.headers)
     next()
 })
