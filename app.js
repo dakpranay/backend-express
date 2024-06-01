@@ -35,7 +35,7 @@ app.set('views',path.join(__dirname,'views'))
 app.use(helmet.contentSecurityPolicy({
     directives: {
         defaultSrc: ["'self'"],
-        connectSrc: ["'self'", "http://127.0.0.1:8080/api/v1/user/login","http://127.0.0.1:8080/api/v1/user/logout"], // Add WebSocket server address
+        connectSrc: ["'self'", "http://127.0.0.1:8080/api/v1/user/login","http://127.0.0.1:8080/api/v1/user/logout","http://127.0.0.1:8080/api/v1/user/updateMe","http://127.0.0.1:8080/api/v1/user/updateMyPassword"], // Add WebSocket server address
         scriptSrc: ["'self'", "js/axios.min.js"], // Allow scripts from your local scripts folder
     },
 }))
@@ -56,6 +56,7 @@ app.use('/api',limiter)
 
 //body parser,reading data from body into req.body
 app.use(express.json({limit:'10kb'}))
+app.use(express.urlencoded({extended:true,limit:'10kb'}))
 app.use(cookieParser())
 
 //Data sanitization against NOsql Query Injection
@@ -74,6 +75,8 @@ app.use(hpp({
 app.use((req,res,next)=>{
     // console.log(req)
     req.requestTime=new Date().toISOString();
+    console.log(req.cookies)
+    // console.log(req.headers)
     next()
 })
 
