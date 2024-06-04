@@ -18,6 +18,7 @@ const viewRouter=require('./routes/viewRoutes')
 
 const corsOptions = {
     origin: 'http://localhost:8080', // Your frontend origin
+    methods: ['GET', 'POST', 'PATCH', 'DELETE','PUT'],
     credentials: true, // Allow credentials (cookies)
 };
 const app = express()
@@ -35,7 +36,8 @@ app.set('views',path.join(__dirname,'views'))
 app.use(helmet.contentSecurityPolicy({
     directives: {
         defaultSrc: ["'self'"],
-        connectSrc: ["'self'", "http://127.0.0.1:8080/api/v1/user/login","http://127.0.0.1:8080/api/v1/user/logout","http://127.0.0.1:8080/api/v1/user/updateMe","http://127.0.0.1:8080/api/v1/user/updateMyPassword"], // Add WebSocket server address
+        connectSrc: ["'self'", "http://127.0.0.1:8080/api/v1/user/login","http://127.0.0.1:8080/api/v1/user/logout","http://127.0.0.1:8080/api/v1/user/updateMyPassword","http://127.0.0.1:8080/api/v1/user/updateMe",
+    ], // Add WebSocket server address
         scriptSrc: ["'self'", "js/axios.min.js"], // Allow scripts from your local scripts folder
     },
 }))
