@@ -8,6 +8,7 @@ const xss=require('xss-clean')
 const hpp=require('hpp')
 const cookieParser=require('cookie-parser')
 const cors=require('cors')
+const compression=require("compression")
 
 const AppError =require('./utils/appError')
 const globleErrorHandler=require('./controller/errorController')
@@ -71,6 +72,8 @@ app.use(xss())
 app.use(hpp({
     whitelist:['duration','ratingsQuantity','ratingsAverage','maxGroupSize','difficulty','price']
 }))
+
+app.use(compression())
 
 
 //Test middleware

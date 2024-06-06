@@ -50,7 +50,7 @@ const sendErrorProd=(err,req,res)=>{
         //programming or other unknown error :dont leak error details 
     }
 
-        console.error(err)
+        // console.error(err)
         return res.status(500).json({
             status:'error',
             message:'Something went wrong'
